@@ -1,0 +1,6 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/carono/yii2crud/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/carono/yii2crud/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/carono/yii2crud/v/stable)](https://packagist.org/packages/carono/yii2crud)
+[![Total Downloads](https://poser.pugx.org/carono/yii2crud/downloads)](https://packagist.org/packages/carono/yii2crud)
+[![License](https://poser.pugx.org/carono/yii2crud/license)](https://packagist.org/packages/carono/yii2crud)
+[![Build Status](https://travis-ci.org/carono/yii2-migrate.svg?branch=master)](https://travis-ci.org/carono/yii2crud)
+[![CodeFactor](https://www.codefactor.io/repository/github/carono/yii2crud/badge)](https://www.codefactor.io/repository/github/carono/yii2crud)

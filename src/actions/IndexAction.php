@@ -24,14 +24,13 @@ class IndexAction extends Action
          * @var ActiveRecord $searchModel
          */
         $classModel = $this->controller->modelClass;
-        $searchModel = null;
-
+        $searchModel = $this->controller->modelSearchClass ? new $this->controller->modelSearchClass : null;
         $query = $this->controller->getModelQuery($classModel);
         $this->controller->indexCondition($query);
-
         $dataProvider = $this->controller->queryToDataProvider($query);
-
-
+        if ($searchModel->load(Yii::$app->request->get())) {
+            $this->controller->applySearch($query, $dataProvider, $searchModel);
+        }
         return $this->controller->render('index', $this->controller->indexParams([
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider

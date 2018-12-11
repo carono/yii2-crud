@@ -9,8 +9,10 @@ use carono\yii2crud\actions\DeleteAction;
 use carono\yii2crud\actions\DeleteBatch;
 use carono\yii2crud\actions\IndexAction;
 use carono\yii2crud\actions\UpdateAction;
+use carono\yii2helpers\QueryHelper;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\BaseDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\filters\VerbFilter;
@@ -102,6 +104,11 @@ abstract class CrudController extends Controller
                 ],
             ],
         ]);
+    }
+
+    public function applySearch(ActiveQuery $query, BaseDataProvider $dataProvider, $searchModel): void
+    {
+        QueryHelper::regular($searchModel, $query);
     }
 
     /**

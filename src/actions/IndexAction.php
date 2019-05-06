@@ -4,10 +4,7 @@
 namespace carono\yii2crud\actions;
 
 
-use app\helpers\QueryHelper;
-use app\interfaces\Search;
 use carono\yii2crud\CrudController;
-use Yii;
 use yii\db\ActiveRecord;
 
 /**
@@ -18,6 +15,8 @@ use yii\db\ActiveRecord;
  */
 class IndexAction extends Action
 {
+    public $view = 'index';
+
     public function run()
     {
         /**
@@ -31,9 +30,7 @@ class IndexAction extends Action
         $this->controller->indexCondition($query);
         $this->controller->applySearch($query, $dataProvider, $searchModel);
 
-        return $this->controller->render('index', $this->controller->indexParams([
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider
-        ]));
+        $params = $this->controller->indexParams(['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
+        return $this->controller->render($this->controller->indexView ?: $this->view, $params);
     }
 }

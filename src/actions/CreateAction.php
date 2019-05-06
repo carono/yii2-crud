@@ -6,7 +6,6 @@ namespace carono\yii2crud\actions;
 
 use carono\yii2crud\CrudController;
 use Yii;
-use yii\base\Action;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
@@ -18,6 +17,8 @@ use yii\helpers\Html;
  */
 class CreateAction extends Action
 {
+    public $view = 'create';
+
     public function run()
     {
         /**
@@ -34,6 +35,6 @@ class CreateAction extends Action
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }
-        return $this->controller->render('create', ['model' => $model]);
+        return $this->controller->render($this->controller->createView ?: $this->view, ['model' => $model]);
     }
 }

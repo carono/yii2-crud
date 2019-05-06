@@ -21,10 +21,10 @@ class DeleteBatch extends Action
         foreach ($ids as $id) {
             $this->controller->runAction('delete', ['id' => $id]);
             if (Yii::$app->session->hasFlash('error')) {
-                $errors[] = Yii::$app->session->getFlash('error');
+                $errors[] = Yii::$app->session->getFlash('error', null, true);
             }
         }
-        if ($errors) {
+        if (!empty($errors)) {
             Yii::$app->session->removeFlash('success');
             Yii::$app->session->setFlash('error', implode('<br>', $errors));
         }

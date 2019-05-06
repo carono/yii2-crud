@@ -5,6 +5,7 @@ namespace carono\yii2crud\actions;
 
 use carono\yii2crud\CrudController;
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * Class DeleteAction
@@ -14,11 +15,13 @@ use Yii;
  */
 class DeleteAction extends Action
 {
+    public $softDeleteAttribute = 'deleted_at';
+
     public function run($id)
     {
         $model = $this->controller->findModel($id);
         $model->delete();
-        if ($model->hasErrors() || ($model->hasAttribute('deleted_at') && !$model->deleted_at)) {
+        if ($model->hasErrors() || $this->hasSoftDeleteError($model)) {
             $msg = current($model->getFirstErrors());
             Yii::$app->session->setFlash('error', $msg ?: Yii::t('errors', 'Fail Deleting Model'));
         } else {
@@ -29,6 +32,18 @@ class DeleteAction extends Action
             return Yii::$app->response->redirect(Yii::$app->request->referrer, 302, false);
         }
 
-        return $this->controller->redirect(['index']);
+        return $this->controller->redirect($this->controller->deleteRedirect($model));
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @return bool
+     */
+    public function hasSoftDeleteError($model): bool
+    {
+        if ($model->hasAttribute($this->softDeleteAttribute)) {
+            return empty($model->{$this->softDeleteAttribute});
+        }
+        return false;
     }
 }

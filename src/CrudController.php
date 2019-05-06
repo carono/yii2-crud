@@ -39,6 +39,7 @@ abstract class CrudController extends Controller
     public $updateView = 'update';
     public $indexView = 'index';
     public $viewView = 'view';
+    public $createView = 'create';
 
     /**
      * @param ActiveRecord|string $class
@@ -173,6 +174,15 @@ abstract class CrudController extends Controller
      * @return array
      */
     public function updateRedirect($model): array
+    {
+        return ['index'];
+    }
+
+    /**
+     * @param $model
+     * @return array
+     */
+    public function deleteRedirect($model): array
     {
         return ['index'];
     }

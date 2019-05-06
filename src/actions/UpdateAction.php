@@ -15,6 +15,8 @@ use Yii;
  */
 class UpdateAction extends Action
 {
+    public $view = 'update';
+
     public function run()
     {
         $id = \Yii::$app->request->get('id');
@@ -30,6 +32,6 @@ class UpdateAction extends Action
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }
-        return $this->controller->render($this->controller->updateView ?: 'update', ['model' => $model]);
+        return $this->controller->render($this->controller->updateView ?: $this->view, ['model' => $model]);
     }
 }

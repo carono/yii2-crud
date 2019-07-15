@@ -32,6 +32,6 @@ class UpdateAction extends Action
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }
-        return $this->controller->render($this->controller->updateView ?: $this->view, ['model' => $model]);
+        return $this->controller->render($this->view, ['model' => $model]);
     }
 }

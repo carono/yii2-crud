@@ -18,6 +18,9 @@ use yii\helpers\Html;
 class CreateAction extends Action
 {
     public $view = 'create';
+    public $loadDefaultValues = true;
+    public $loadGetParams = true;
+    public $skipIfSet = true;
 
     public function run()
     {
@@ -28,6 +31,12 @@ class CreateAction extends Action
         $class = $this->controller->createClass ?: $this->controller->modelClass;
         $model = new $class();
         $this->controller->beforeCreate($model);
+        if ($this->loadDefaultValues) {
+            $model->loadDefaultValues($this->skipIfSet);
+        }
+        if ($this->loadGetParams) {
+            $model->load(\Yii::$app->request->get());
+        }
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Model Successful Created'));
@@ -35,6 +44,6 @@ class CreateAction extends Action
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }
-        return $this->controller->render($this->controller->createView ?: $this->view, ['model' => $model]);
+        return $this->controller->render($this->view, ['model' => $model]);
     }
 }

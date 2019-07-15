@@ -32,6 +32,6 @@ class DeleteBatch extends Action
             return Yii::$app->response->redirect(Yii::$app->request->referrer, 302, false);
         }
 
-        return $this->controller->redirect(['index']);
+        return $this->controller->redirect($this->controller->deleteBatchRedirect());
     }
 }

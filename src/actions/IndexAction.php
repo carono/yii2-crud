@@ -31,6 +31,6 @@ class IndexAction extends Action
         $this->controller->applySearch($query, $dataProvider, $searchModel);
 
         $params = $this->controller->indexParams(['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
-        return $this->controller->render($this->controller->indexView ?: $this->view, $params);
+        return $this->controller->render($this->view, $params);
     }
 }

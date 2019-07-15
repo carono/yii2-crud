@@ -9,6 +9,7 @@ use carono\yii2crud\actions\DeleteAction;
 use carono\yii2crud\actions\DeleteBatch;
 use carono\yii2crud\actions\IndexAction;
 use carono\yii2crud\actions\UpdateAction;
+use carono\yii2crud\actions\ViewAction;
 use carono\yii2helpers\QueryHelper;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -31,15 +32,18 @@ abstract class CrudController extends Controller
      * @var ActiveRecord
      */
     public $modelSearchClass;
-
     public $createClass;
-
     public $updateClass;
+    public $viewClass;
 
     public $updateView = 'update';
     public $indexView = 'index';
     public $viewView = 'view';
     public $createView = 'create';
+
+    public $breadcrumbsAppdend = true;
+    public $breadcrumbsNamespace = 'app\breadcrumbs';
+    public $breadcrumbsParam = 'breadcrumbs';
 
     /**
      * @param ActiveRecord|string $class
@@ -91,6 +95,18 @@ abstract class CrudController extends Controller
         return new ActiveDataProvider(array_merge(['query' => $query], $options));
     }
 
+    public function render($view, $params = [])
+    {
+        if (\Yii::$app->request->isAjax) {
+            return parent::renderAjax($view, $params);
+        }
+        if ($this->breadcrumbsAppdend) {
+            Breadcrumbs::$crumbsNamespace = $this->breadcrumbsNamespace;
+            \Yii::$app->view->params[$this->breadcrumbsParam] = Breadcrumbs::formCrumbs($this->action, $params);
+        }
+        return parent::render($view, $params);
+    }
+
     /**
      * @inheritdoc
      */
@@ -107,9 +123,21 @@ abstract class CrudController extends Controller
         ]);
     }
 
+    /**
+     * @param ActiveQuery $query
+     * @param BaseDataProvider $dataProvider
+     * @param $searchModel
+     */
     public function applySearch(ActiveQuery $query, BaseDataProvider $dataProvider, $searchModel): void
     {
-        QueryHelper::regular($searchModel, $query);
+        if (method_exists($searchModel, 'updateQuery')) {
+            $searchModel->updateQuery($query);
+        } else {
+            QueryHelper::regular($searchModel, $query);
+        }
+        if (method_exists($searchModel, 'updateDataProvider')) {
+            $searchModel->updateDataProvider($dataProvider);
+        }
     }
 
     /**
@@ -137,20 +165,6 @@ abstract class CrudController extends Controller
     public function indexParams($params): array
     {
         return $params;
-    }
-
-    /**
-     * @param $id
-     * @return mixed|string
-     */
-    public function actionView($id)
-    {
-        if (Yii::$app->request->isPost) {
-            return $this->runAction('update', ['id' => $this->id]);
-        }
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
     }
 
     /**
@@ -188,6 +202,15 @@ abstract class CrudController extends Controller
     }
 
     /**
+     * @param $model
+     * @return array
+     */
+    public function deleteBatchRedirect(): array
+    {
+        return ['index'];
+    }
+
+    /**
      * @return array
      */
     public function actions()
@@ -195,12 +218,19 @@ abstract class CrudController extends Controller
         return [
             'update' => [
                 'class' => UpdateAction::class,
+                'view' => $this->updateView
             ],
             'index' => [
-                'class' => IndexAction::class
+                'class' => IndexAction::class,
+                'view' => $this->indexView
+            ],
+            'view' => [
+                'class' => ViewAction::class,
+                'view' => $this->viewView
             ],
             'create' => [
-                'class' => CreateAction::class
+                'class' => CreateAction::class,
+                'view' => $this->createView
             ],
             'delete' => [
                 'class' => DeleteAction::class

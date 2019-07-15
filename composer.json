@@ -16,7 +16,7 @@
     }
   },
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.1",
     "yiisoft/yii2": "~2.0",
     "carono/yii2-helpers": "^0.1.5"
   },

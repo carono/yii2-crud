@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
 class DeleteAction extends Action
 {
     public $softDeleteAttribute = 'deleted_at';
+    public $preventAjaxRedirect = false;
 
     public function run($id)
     {
@@ -28,8 +29,8 @@ class DeleteAction extends Action
             Yii::$app->session->setFlash('success', Yii::t('messages', 'Model deleted'));
         }
 
-        if (Yii::$app->request->isAjax) {
-            return Yii::$app->response->redirect(Yii::$app->request->referrer, 302, false);
+        if (Yii::$app->request->isAjax && !$this->preventAjaxRedirect) {
+            return Yii::$app->response->redirect($this->controller->deleteRedirect($model), 302, false);
         }
 
         return $this->controller->redirect($this->controller->deleteRedirect($model));

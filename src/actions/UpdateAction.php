@@ -3,7 +3,6 @@
 namespace carono\yii2crud\actions;
 
 use carono\yii2crud\CrudController;
-use yii\base\Action;
 use yii\helpers\Html;
 use Yii;
 

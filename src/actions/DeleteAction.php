@@ -12,11 +12,13 @@ use yii\db\ActiveRecord;
  *
  * @package carono\yii2crud\actions
  * @property CrudController $controller
+ * @method getMessageOnDelete()
  */
 class DeleteAction extends Action
 {
     public $softDeleteAttribute = 'deleted_at';
     public $preventAjaxRedirect = false;
+    public $messageOnDelete = 'Model deleted';
 
     public function run($id)
     {
@@ -26,7 +28,7 @@ class DeleteAction extends Action
             $msg = current($model->getFirstErrors());
             Yii::$app->session->setFlash('error', $msg ?: Yii::t('errors', 'Fail Deleting Model'));
         } else {
-            Yii::$app->session->setFlash('success', Yii::t('messages', 'Model deleted'));
+            Yii::$app->session->setFlash('success', $this->getMessageOnDelete($model));
         }
 
         if (Yii::$app->request->isAjax && !$this->preventAjaxRedirect) {

@@ -11,10 +11,12 @@ use Yii;
  *
  * @package carono\yii2crud\actions
  * @property CrudController $controller
+ * @method getMessageOnUpdate(\yii\db\ActiveRecord $model)
  */
 class UpdateAction extends Action
 {
     public $view = 'update';
+    public $messageOnUpdate = 'Model Successful Updated';
 
     public function run()
     {
@@ -22,7 +24,7 @@ class UpdateAction extends Action
         $model = $this->controller->findModel($id, $this->controller->updateClass);
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'Model Successful Updated'));
+                Yii::$app->session->setFlash('success', $this->getMessageOnUpdate($model));
                 $url = $this->controller->updateRedirect($model);
                 if (Yii::$app->request->isPjax) {
                     return Yii::$app->response->redirect($url, 302, false);

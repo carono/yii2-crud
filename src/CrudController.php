@@ -176,36 +176,36 @@ abstract class CrudController extends Controller
 
     /**
      * @param $model
-     * @return array
+     * @return array|string
      */
-    public function createRedirect($model): array
+    public function createRedirect($model)
     {
         return ['index'];
     }
 
     /**
      * @param $model
-     * @return array
+     * @return array|string
      */
-    public function updateRedirect($model): array
+    public function updateRedirect($model)
     {
         return ['index'];
     }
 
     /**
      * @param $model
-     * @return array
+     * @return array|string
      */
-    public function deleteRedirect($model): array
+    public function deleteRedirect($model)
     {
         return ['index'];
     }
 
     /**
      * @param $model
-     * @return array
+     * @return array|string
      */
-    public function deleteBatchRedirect(): array
+    public function deleteBatchRedirect()
     {
         return ['index'];
     }

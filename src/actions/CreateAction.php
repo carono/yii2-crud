@@ -14,6 +14,7 @@ use yii\helpers\Html;
  *
  * @package carono\yii2crud\actions
  * @property CrudController $controller
+ * @method onMessageOnCreate(\yii\db\ActiveRecord $model)
  */
 class CreateAction extends Action
 {
@@ -21,6 +22,7 @@ class CreateAction extends Action
     public $loadDefaultValues = true;
     public $loadGetParams = true;
     public $skipIfSet = true;
+    public $messageOnCreate = 'Model Successful Created';
 
     public function run()
     {
@@ -39,7 +41,7 @@ class CreateAction extends Action
         }
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'Model Successful Created'));
+                Yii::$app->session->setFlash('success', $this->onMessageOnCreate($model));
                 return $this->controller->redirect($this->controller->createRedirect($model));
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));

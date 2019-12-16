@@ -66,7 +66,7 @@ abstract class CrudController extends Controller
          * @var ActiveRecord $class
          */
         $class = $class ?? $this->modelClass;
-        $query = $this->getModelQuery($class)->andWhere(['id' => (int)$id]);
+        $query = $this->getModelQuery($class)->andWhere(['id' => $id]);
         $this->findModelCondition($query);
         if (($model = $query->one()) !== null) {
             return $model;

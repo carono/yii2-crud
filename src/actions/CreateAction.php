@@ -30,7 +30,7 @@ class CreateAction extends Action
          * @var ActiveRecord $class
          * @var ActiveRecord $model
          */
-        $class = $this->controller->createClass ?: $this->controller->modelClass;
+        $class = $this->modelClass ?: $this->controller->createClass;
         $model = new $class();
         $this->controller->beforeCreate($model);
         if ($this->loadDefaultValues) {

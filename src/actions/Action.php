@@ -11,6 +11,7 @@ abstract class Action extends \yii\base\Action
     public $primaryKeyParam = 'id';
     public $layout;
     public $view;
+    public $modelClass;
 
     public function init()
     {

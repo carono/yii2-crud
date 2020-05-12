@@ -14,9 +14,8 @@ use Yii;
  */
 class DeleteBatch extends Action
 {
-    public function run()
+    public function run(array $ids)
     {
-        $ids = (array)Yii::$app->request->post('ids');
         $errors = [];
         foreach ($ids as $id) {
             $this->controller->runAction('delete', ['id' => $id]);

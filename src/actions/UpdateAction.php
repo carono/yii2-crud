@@ -18,9 +18,8 @@ class UpdateAction extends Action
     public $view = 'update';
     public $messageOnUpdate = 'Model Successful Updated';
 
-    public function run()
+    public function run($id)
     {
-        $id = \Yii::$app->request->get('id');
         $model = $this->controller->findModel($id, $this->controller->updateClass);
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {

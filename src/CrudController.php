@@ -45,6 +45,10 @@ abstract class CrudController extends Controller
     public $breadcrumbsNamespace = 'app\breadcrumbs';
     public $breadcrumbsParam = 'breadcrumbs';
 
+    protected $params = [];
+
+    public $primaryKey = 'id';
+
     /**
      * @param ActiveRecord|string $class
      * @return ActiveQuery
@@ -66,8 +70,8 @@ abstract class CrudController extends Controller
          * @var ActiveRecord $class
          */
         $class = $class ?? $this->modelClass;
-        $query = $this->getModelQuery($class)->andWhere(['id' => $id]);
-        $this->findModelCondition($query);
+        $query = $this->getModelQuery($class)->andWhere([$this->primaryKey => $id]);
+        $query = $this->findModelCondition($query);
         if (($model = $query->one()) !== null) {
             return $model;
         }
@@ -209,7 +213,7 @@ abstract class CrudController extends Controller
     {
         return ['index'];
     }
-
+    
     /**
      * @return array
      */
@@ -218,7 +222,10 @@ abstract class CrudController extends Controller
         return [
             'update' => [
                 'class' => UpdateAction::class,
-                'view' => $this->updateView
+                'view' => $this->updateView,
+                'redirect' => function ($model) {
+                    return $this->updateRedirect($model);
+                }
             ],
             'index' => [
                 'class' => IndexAction::class,

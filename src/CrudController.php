@@ -49,6 +49,15 @@ abstract class CrudController extends Controller
 
     public $primaryKey = 'id';
 
+    const EVENT_BEFORE_CREATE = 'beforeCreate';
+    const EVENT_AFTER_CREATE = 'afterCreate';
+    const EVENT_ERROR_CREATE = 'errorCreate';
+
+    const EVENT_BEFORE_UPDATE_LOAD = 'beforeUpdateLoad';
+    const EVENT_AFTER_UPDATE_LOAD = 'afterUpdateLoad';
+    const EVENT_AFTER_UPDATE = 'afterUpdate';
+    const EVENT_ERROR_UPDATE = 'errorUpdate';
+
     /**
      * @param ActiveRecord|string $class
      * @return ActiveQuery
@@ -213,7 +222,7 @@ abstract class CrudController extends Controller
     {
         return ['index'];
     }
-    
+
     /**
      * @return array
      */

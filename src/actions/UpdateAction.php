@@ -25,10 +25,11 @@ class UpdateAction extends Action
     {
         $id = ArrayHelper::getValue($this->params, $this->primaryKeyParam);
         $model = $this->controller->findModel($id, $this->modelClass ?: $this->controller->updateClass);
-        $this->trigger('UPDATE_BEFORE_LOAD', new Event(['data' => [$model]]));
+        $this->trigger(CrudController::EVENT_BEFORE_UPDATE_LOAD, new Event(['data' => [$model]]));
         if ($model->load(Yii::$app->request->post())) {
-            $this->trigger('UPDATE_AFTER_LOAD', new Event(['data' => [$model]]));
+            $this->trigger(CrudController::EVENT_AFTER_UPDATE_LOAD, new Event(['data' => [$model]]));
             if ($model->save()) {
+                $this->trigger(CrudController::EVENT_AFTER_UPDATE, new Event(['data' => [$model]]));
                 Yii::$app->session->setFlash('success', $this->getMessageOnUpdate($model));
                 if ($this->redirect instanceof \Closure) {
                     $url = call_user_func($this->redirect, $model);
@@ -39,6 +40,8 @@ class UpdateAction extends Action
                     return Yii::$app->response->redirect($url, 302, false);
                 }
                 return $this->controller->redirect($url);
+            } else {
+                $this->trigger(CrudController::EVENT_ERROR_UPDATE, new Event(['data' => [$model]]));
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }

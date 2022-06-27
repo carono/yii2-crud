@@ -5,6 +5,7 @@ namespace carono\yii2crud\actions;
 
 
 use carono\yii2crud\CrudController;
+use carono\yii2crud\Event;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
@@ -32,7 +33,7 @@ class CreateAction extends Action
          */
         $class = $this->modelClass ?: ($this->controller->createClass ?: $this->controller->modelClass);
         $model = new $class();
-        $this->controller->beforeCreate($model);
+        $this->controller->trigger(CrudController::EVENT_BEFORE_CREATE, new Event(['model' => $model]));
         if ($this->loadDefaultValues) {
             $model->loadDefaultValues($this->skipIfSet);
         }
@@ -42,7 +43,10 @@ class CreateAction extends Action
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', $this->getMessageOnCreate($model));
+                $this->controller->trigger(CrudController::EVENT_AFTER_CREATE, new Event(['model' => $model]));
                 return $this->controller->redirect($this->controller->createRedirect($model));
+            } else {
+                $this->controller->trigger(CrudController::EVENT_ERROR_CREATE, new Event(['model' => $model]));
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }

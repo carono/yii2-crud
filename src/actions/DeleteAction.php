@@ -20,9 +20,9 @@ class DeleteAction extends Action
     public $preventAjaxRedirect = false;
     public $messageOnDelete = 'Model deleted';
 
-    public function run($id)
+    public function run()
     {
-        $model = $this->controller->findModel($id);
+        $model = $this->findModel($this->modelClass);
         $model->delete();
         if ($model->hasErrors() || $this->hasSoftDeleteError($model)) {
             $msg = current($model->getFirstErrors());

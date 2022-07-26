@@ -3,10 +3,9 @@
 namespace carono\yii2crud\actions;
 
 use carono\yii2crud\CrudController;
-use yii\base\Event;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use Yii;
+use yii\base\Event;
+use yii\helpers\Html;
 
 /**
  * Class UpdateAction
@@ -23,8 +22,7 @@ class UpdateAction extends Action
 
     public function run()
     {
-        $id = ArrayHelper::getValue($this->params, $this->primaryKeyParam);
-        $model = $this->controller->findModel($id, $this->modelClass ?: $this->controller->updateClass);
+        $model = $this->findModel($this->modelClass ?: $this->controller->updateClass);
         $this->trigger(CrudController::EVENT_BEFORE_UPDATE_LOAD, new Event(['data' => [$model]]));
         if ($model->load(Yii::$app->request->post())) {
             $this->trigger(CrudController::EVENT_AFTER_UPDATE_LOAD, new Event(['data' => [$model]]));

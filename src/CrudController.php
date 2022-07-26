@@ -47,7 +47,7 @@ abstract class CrudController extends Controller
 
     protected $params = [];
 
-    public $primaryKey = 'id';
+    public $primaryKey = ['id'];
 
     const EVENT_BEFORE_CREATE = 'beforeCreate';
     const EVENT_AFTER_CREATE = 'afterCreate';
@@ -79,7 +79,10 @@ abstract class CrudController extends Controller
          * @var ActiveRecord $class
          */
         $class = $class ?? $this->modelClass;
-        $query = $this->getModelQuery($class)->andWhere([$this->primaryKey => $id]);
+        $query = $this->getModelQuery($class);
+        foreach ($this->primaryKey as $key) {
+            $query->andWhere([$key => $id[$key] ?? null]);
+        }
         $query = $this->findModelCondition($query);
         if (($model = $query->one()) !== null) {
             return $model;
@@ -232,6 +235,7 @@ abstract class CrudController extends Controller
             'update' => [
                 'class' => UpdateAction::class,
                 'view' => $this->updateView,
+                'primaryKeyParam' => $this->primaryKey,
                 'redirect' => function ($model) {
                     return $this->updateRedirect($model);
                 }
@@ -242,6 +246,7 @@ abstract class CrudController extends Controller
             ],
             'view' => [
                 'class' => ViewAction::class,
+                'primaryKeyParam' => $this->primaryKey,
                 'view' => $this->viewView
             ],
             'create' => [
@@ -249,7 +254,8 @@ abstract class CrudController extends Controller
                 'view' => $this->createView
             ],
             'delete' => [
-                'class' => DeleteAction::class
+                'class' => DeleteAction::class,
+                'primaryKeyParam' => $this->primaryKey,
             ],
             'delete-batch' => [
                 'class' => DeleteBatch::class

@@ -19,12 +19,12 @@ class ViewAction extends Action
     public $updateIfPost = true;
     public $updateAction = 'update';
 
-    public function run($id)
+    public function run()
     {
-        $model = $this->controller->findModel($id, $this->controller->viewClass);
+        $model = $this->findModel($this->modelClass ?: $this->controller->viewClass);
 
         if ($this->updateIfPost && Yii::$app->request->isPost) {
-            return $this->controller->runAction($this->updateAction, [$this->primaryKeyParam => $id]);
+            return $this->controller->runAction($this->updateAction, $this->getPrimaryKeys());
         }
         return $this->controller->render($this->view, ['model' => $model]);
     }

@@ -56,8 +56,12 @@ abstract class Action extends \yii\base\Action
     public function getPrimaryKeys()
     {
         $ids = [];
-        foreach ((array)$this->primaryKeyParam as $param) {
-            $ids[$param] = ArrayHelper::getValue($this->params, $param);
+        foreach ((array)$this->primaryKeyParam as $param => $field) {
+            if (is_integer($param)) {
+                $ids[$field] = ArrayHelper::getValue($this->params, $field);
+            } else {
+                $ids[$field] = ArrayHelper::getValue($this->params, $param);
+            }
         }
         return $ids;
     }

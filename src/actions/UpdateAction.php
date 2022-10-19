@@ -3,8 +3,8 @@
 namespace carono\yii2crud\actions;
 
 use carono\yii2crud\CrudController;
+use carono\yii2crud\Event;
 use Yii;
-use yii\base\Event;
 use yii\helpers\Html;
 
 /**
@@ -23,11 +23,11 @@ class UpdateAction extends Action
     public function run()
     {
         $model = $this->findModel($this->modelClass ?: $this->controller->updateClass);
-        $this->trigger(CrudController::EVENT_BEFORE_UPDATE_LOAD, new Event(['data' => [$model]]));
+        $this->controller->trigger(CrudController::EVENT_BEFORE_UPDATE_LOAD, new Event(['model' => $model]));
         if ($model->load(Yii::$app->request->post())) {
-            $this->trigger(CrudController::EVENT_AFTER_UPDATE_LOAD, new Event(['data' => [$model]]));
+            $this->controller->trigger(CrudController::EVENT_AFTER_UPDATE_LOAD, new Event(['model' => $model]));
             if ($model->save()) {
-                $this->trigger(CrudController::EVENT_AFTER_UPDATE, new Event(['data' => [$model]]));
+                $this->controller->trigger(CrudController::EVENT_AFTER_UPDATE, new Event(['model' => $model]));
                 Yii::$app->session->setFlash('success', $this->getMessageOnUpdate($model));
                 if ($this->redirect instanceof \Closure) {
                     $url = call_user_func($this->redirect, $model);
@@ -39,7 +39,7 @@ class UpdateAction extends Action
                 }
                 return $this->controller->redirect($url);
             } else {
-                $this->trigger(CrudController::EVENT_ERROR_UPDATE, new Event(['data' => [$model]]));
+                $this->controller->trigger(CrudController::EVENT_ERROR_UPDATE, new Event(['model' => $model]));
             }
             Yii::$app->session->setFlash('error', Html::errorSummary($model));
         }

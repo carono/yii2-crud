@@ -22,9 +22,8 @@ class ViewAction extends Action
     public function run()
     {
         $model = $this->findModel($this->modelClass ?: $this->controller->viewClass);
-
         if ($this->updateIfPost && Yii::$app->request->isPost) {
-            return $this->controller->runAction($this->updateAction, $this->getPrimaryKeys());
+            return $this->controller->runAction($this->updateAction, $this->params);
         }
         return $this->controller->render($this->view, ['model' => $model]);
     }

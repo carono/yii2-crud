@@ -39,7 +39,7 @@ abstract class Action extends \yii\base\Action
     public function render($view, $params = [])
     {
         if ($this->renderParams instanceof \Closure) {
-            $params = array_merge($params, call_user_func($this->renderParams, null));
+            $params = array_merge($params, call_user_func($this->renderParams, $params));
         }
         if (is_array($this->renderParams)) {
             $params = array_merge($params, $this->renderParams);

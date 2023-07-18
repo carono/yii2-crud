@@ -5,6 +5,7 @@ namespace carono\yii2crud\actions;
 
 
 use carono\yii2crud\CrudController;
+use Closure;
 use yii\db\ActiveRecord;
 
 /**
@@ -16,21 +17,27 @@ use yii\db\ActiveRecord;
 class IndexAction extends Action
 {
     public $view = 'index';
+    public $modelSearchClass;
+    public $query;
+    public $dataProvider;
+    public $condition;
+    public $params;
 
     public function run()
     {
         /**
          * @var ActiveRecord $searchModel
          */
-        $classModel = $this->controller->modelClass;
-        $searchModel = $this->controller->modelSearchClass ? new $this->controller->modelSearchClass : null;
-        $query = $this->controller->getModelQuery($classModel);
-        $dataProvider = $this->controller->queryToDataProvider($query);
+        $searchModel = $this->modelSearchClass ? new $this->modelSearchClass : null;
+        $query = is_callable($this->query) ? call_user_func($this->query, $this->modelClass, $this) : $this->query;
+        $dataProvider = is_callable($this->dataProvider) ? call_user_func($this->dataProvider, $query, $this) : $this->dataProvider;
 
-        $this->controller->indexCondition($query);
-        $this->controller->applySearch($query, $dataProvider, $searchModel);
+        if (is_callable($this->condition)) {
+            call_user_func($this->condition, $query, $dataProvider, $searchModel);
+        } elseif ($this->condition) {
+            $query->andWhere($this->condition);
+        }
 
-        $params = $this->controller->indexParams(['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
-        return $this->controller->render($this->view, $params);
+        return $this->render($this->view, ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
     }
 }

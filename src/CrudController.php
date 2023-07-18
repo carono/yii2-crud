@@ -87,6 +87,7 @@ abstract class CrudController extends Controller
         if (($model = $query->one()) !== null) {
             return $model;
         }
+
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
@@ -242,7 +243,22 @@ abstract class CrudController extends Controller
             ],
             'index' => [
                 'class' => IndexAction::class,
-                'view' => $this->indexView
+                'view' => $this->indexView,
+                'modelClass' => $this->modelClass,
+                'modelSearchClass' => $this->modelSearchClass,
+                'query' => function ($class, $action) {
+                    return $this->getModelQuery($action->modelClass);
+                },
+                'dataProvider' => function ($query) {
+                    return $this->queryToDataProvider($query);
+                },
+                'condition' => function ($query, $dataProvider, $searchModel) {
+                    $this->indexCondition($query);
+                    $this->applySearch($query, $dataProvider, $searchModel);
+                },
+                'renderParams' => function ($params) {
+                    return $this->indexParams($params);
+                }
             ],
             'view' => [
                 'class' => ViewAction::class,

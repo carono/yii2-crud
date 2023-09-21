@@ -22,22 +22,29 @@ class IndexAction extends Action
     public $dataProvider;
     public $condition;
     public $params;
+    protected $searchModel;
+
+    public function getSearchModel()
+    {
+        return $this->searchModel;
+    }
 
     public function run()
     {
         /**
          * @var ActiveRecord $searchModel
          */
-        $searchModel = $this->modelSearchClass ? new $this->modelSearchClass : null;
+        $this->searchModel = $this->modelSearchClass ? new $this->modelSearchClass : null;
         $query = is_callable($this->query) ? call_user_func($this->query, $this->modelClass, $this) : $this->query;
-        $dataProvider = is_callable($this->dataProvider) ? call_user_func($this->dataProvider, $query, $this) : $this->dataProvider;
 
         if (is_callable($this->condition)) {
-            call_user_func($this->condition, $query, $dataProvider, $searchModel, $this);
+            call_user_func($this->condition, $query, $this);
         } elseif ($this->condition) {
             $query->andWhere($this->condition);
         }
 
-        return $this->render($this->view, ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
+        $dataProvider = is_callable($this->dataProvider) ? call_user_func($this->dataProvider, $query, $this) : $this->dataProvider;
+
+        return $this->render($this->view, ['searchModel' => $this->searchModel, 'dataProvider' => $dataProvider]);
     }
 }

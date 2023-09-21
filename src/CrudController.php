@@ -249,12 +249,14 @@ abstract class CrudController extends Controller
                 'query' => function ($class, $action) {
                     return $this->getModelQuery($action->modelClass);
                 },
-                'dataProvider' => function ($query) {
-                    return $this->queryToDataProvider($query);
-                },
-                'condition' => function ($query, $dataProvider, $searchModel) {
-                    $this->indexCondition($query);
+                'dataProvider' => function ($query, IndexAction $action) {
+                    $searchModel = $action->getSearchModel();
+                    $dataProvider = $this->queryToDataProvider($query);
                     $this->applySearch($query, $dataProvider, $searchModel);
+                    return $dataProvider;
+                },
+                'condition' => function ($query, IndexAction $action) {
+                    $this->indexCondition($query);
                 },
                 'renderParams' => function ($params) {
                     return $this->indexParams($params);

@@ -33,7 +33,7 @@ class IndexAction extends Action
         $dataProvider = is_callable($this->dataProvider) ? call_user_func($this->dataProvider, $query, $this) : $this->dataProvider;
 
         if (is_callable($this->condition)) {
-            call_user_func($this->condition, $query, $dataProvider, $searchModel);
+            call_user_func($this->condition, $query, $dataProvider, $searchModel, $this);
         } elseif ($this->condition) {
             $query->andWhere($this->condition);
         }

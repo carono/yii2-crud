@@ -105,7 +105,7 @@ abstract class CrudController extends Controller
         $options = [
             'sort' => [
                 'defaultOrder' => [
-                    current(Yii::$app->db->getTableSchema($table)->primaryKey) => SORT_ASC
+                    current($modelClass::getDb()->getTableSchema($table)->primaryKey) => SORT_ASC
                 ]
             ],
         ];

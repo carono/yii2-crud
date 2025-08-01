@@ -29,15 +29,15 @@ class CreateAction extends Action
     {
         /**
          * @var ActiveRecord $class
-         * @var ActiveRecord $model
+         * @var ActiveRecord|Model $model
          */
         $class = $this->modelClass ?: ($this->controller->createClass ?: $this->controller->modelClass);
         $model = new $class();
         $this->controller->trigger(CrudController::EVENT_BEFORE_CREATE, new Event(['model' => $model]));
-        if ($this->loadDefaultValues) {
+        if ($this->loadDefaultValues && method_exists($model, 'loadDefaultValues')) {
             $model->loadDefaultValues($this->skipIfSet);
         }
-        if ($this->loadGetParams) {
+        if ($this->loadGetParams && method_exists($model, 'load')) {
             $model->load(\Yii::$app->request->get());
         }
         if ($model->load(Yii::$app->request->post())) {

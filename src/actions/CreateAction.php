@@ -7,6 +7,7 @@ namespace carono\yii2crud\actions;
 use carono\yii2crud\CrudController;
 use carono\yii2crud\Event;
 use Yii;
+use yii\base\Model;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
@@ -22,6 +23,7 @@ class CreateAction extends Action
     public $view = 'create';
     public $loadDefaultValues = true;
     public $loadGetParams = true;
+    public $loadGetFormName = null;
     public $skipIfSet = true;
     public $messageOnCreate = 'Model Successful Created';
 
@@ -38,7 +40,7 @@ class CreateAction extends Action
             $model->loadDefaultValues($this->skipIfSet);
         }
         if ($this->loadGetParams && method_exists($model, 'load')) {
-            $model->load(\Yii::$app->request->get());
+            $model->load(\Yii::$app->request->get(), $this->loadGetFormName);
         }
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {

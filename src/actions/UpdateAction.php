@@ -20,6 +20,7 @@ class UpdateAction extends Action
     public $messageOnUpdate = 'Model Successful Updated';
     public $redirect;
     public $properties = [];
+    public $standAloneSave = false;
 
     public function run()
     {
@@ -28,7 +29,7 @@ class UpdateAction extends Action
         foreach ($this->properties as $property => $value) {
             $model->$property = $value;
         }
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) || $this->standAloneSave) {
             $this->controller->trigger(CrudController::EVENT_AFTER_UPDATE_LOAD, new Event(['model' => $model, 'action' => $this]));
             if ($model->save()) {
                 $this->controller->trigger(CrudController::EVENT_AFTER_UPDATE, new Event(['model' => $model, 'action' => $this]));

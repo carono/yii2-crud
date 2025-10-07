@@ -24,17 +24,6 @@ class UpdateAction extends Action
     public $properties = [];
     public $standAloneSave = false;
 
-    public function redirect($model)
-    {
-        if (!$url = $this->getRedirectUrl($model)) {
-            return $this->controller->refresh();
-        }
-        if (Yii::$app->request->isPjax) {
-            return Yii::$app->response->redirect($url, 302, false);
-        }
-        return $this->controller->redirect($url);
-    }
-
     public function renderView($model)
     {
         if ($this->view) {
@@ -106,13 +95,5 @@ class UpdateAction extends Action
         ]));
 
         Yii::$app->session->setFlash('success', $this->getMessageOnUpdate($model));
-    }
-
-    private function getRedirectUrl(ActiveRecord $model)
-    {
-        if ($this->redirect instanceof Closure) {
-            return call_user_func($this->redirect, $model);
-        }
-        return $this->redirect;
     }
 }

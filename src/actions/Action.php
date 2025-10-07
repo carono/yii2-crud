@@ -4,6 +4,8 @@
 namespace carono\yii2crud\actions;
 
 
+use Closure;
+use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -69,5 +71,24 @@ abstract class Action extends \yii\base\Action
     public function findModel($class)
     {
         return $this->controller->findModel($this->getPrimaryKeys(), $class);
+    }
+
+    protected function getRedirectUrl($model)
+    {
+        if ($this->redirect instanceof Closure) {
+            return call_user_func($this->redirect, $model);
+        }
+        return $this->redirect;
+    }
+
+    public function redirect($model)
+    {
+        if (!$url = $this->getRedirectUrl($model)) {
+            return $this->controller->refresh();
+        }
+        if (Yii::$app->request->isPjax) {
+            return Yii::$app->response->redirect($url, 302, false);
+        }
+        return $this->controller->redirect($url);
     }
 }

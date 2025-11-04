@@ -43,7 +43,7 @@ class CreateAction extends Action
 
         if ($this->handlePostRequest($model)) {
             $this->handleSuccessfulSave($model);
-            return $this->renderView($model);
+            return $this->redirect($model);
         }
 
         return $this->renderView($model);

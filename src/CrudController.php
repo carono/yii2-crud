@@ -270,6 +270,9 @@ abstract class CrudController extends Controller
             'create' => [
                 'class' => CreateAction::class,
                 'view' => $this->createView,
+                'redirect' => function ($model) {
+                    return $this->createRedirect($model);
+                }
             ],
             'delete' => [
                 'class' => DeleteAction::class,

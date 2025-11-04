@@ -36,7 +36,7 @@ class CreateAction extends Action
         /** @var ActiveRecord|Model $model */
         $model = new $class();
 
-        $this->controller->trigger(CrudController::EVENT_BEFORE_CREATE, new Event(['model' => $model]));
+        $this->controller->trigger(CrudController::EVENT_BEFORE_CREATE, new Event(['model' => $model, 'action' => $this]));
 
         $this->loadDefaultValues($model);
         $this->loadGetParams($model);
@@ -96,7 +96,7 @@ class CreateAction extends Action
             return true;
         }
 
-        $this->controller->trigger(CrudController::EVENT_ERROR_CREATE, new Event(['model' => $model]));
+        $this->controller->trigger(CrudController::EVENT_ERROR_CREATE, new Event(['model' => $model, 'action' => $this]));
         Yii::$app->session->setFlash('error', Html::errorSummary($model));
 
         return false;
@@ -108,6 +108,6 @@ class CreateAction extends Action
     protected function handleSuccessfulSave($model)
     {
         Yii::$app->session->setFlash('success', $this->getMessageOnCreate($model));
-        $this->controller->trigger(CrudController::EVENT_AFTER_CREATE, new Event(['model' => $model]));
+        $this->controller->trigger(CrudController::EVENT_AFTER_CREATE, new Event(['model' => $model, 'action' => $this]));
     }
 }

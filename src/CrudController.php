@@ -80,8 +80,8 @@ abstract class CrudController extends Controller
          */
         $class = $class ?? $this->modelClass;
         $query = $this->getModelQuery($class);
-        foreach ($this->primaryKey as $key) {
-            $query->andWhere([$key => $id[$key] ?? null]);
+        foreach ($id as $key => $value) {
+            $query->andWhere([$key => $value]);
         }
         $query = $this->findModelCondition($query);
         if (($model = $query->one()) !== null) {
@@ -270,9 +270,6 @@ abstract class CrudController extends Controller
             'create' => [
                 'class' => CreateAction::class,
                 'view' => $this->createView,
-                'redirect' => function ($model) {
-                    return $this->createRedirect($model);
-                }
             ],
             'delete' => [
                 'class' => DeleteAction::class,

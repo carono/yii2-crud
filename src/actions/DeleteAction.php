@@ -19,6 +19,7 @@ class DeleteAction extends Action
     public $softDeleteAttribute = 'deleted_at';
     public $preventAjaxRedirect = false;
     public $messageOnDelete = 'Model deleted';
+    public $redirect;
 
     public function run()
     {
@@ -32,10 +33,10 @@ class DeleteAction extends Action
         }
 
         if (Yii::$app->request->isAjax && !$this->preventAjaxRedirect) {
-            return Yii::$app->response->redirect($this->controller->deleteRedirect($model), 302, false);
+            return $this->redirect($model);
         }
 
-        return $this->controller->redirect($this->controller->deleteRedirect($model));
+        return $this->redirect($model);
     }
 
     /**

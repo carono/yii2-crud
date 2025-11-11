@@ -8,14 +8,16 @@ use Closure;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
+use yii\web\NotFoundHttpException;
 
 abstract class Action extends \yii\base\Action
 {
-    public $primaryKeyParam;
+    public $primaryKeyParam = ['id'];
     public $layout;
     public $view;
     public $modelClass;
     public $renderParams;
+    public $findModel;
     protected $params = [];
 
     public function init()
@@ -70,7 +72,24 @@ abstract class Action extends \yii\base\Action
 
     public function findModel($class)
     {
-        return $this->controller->findModel($this->getPrimaryKeys(), $class);
+        if (method_exists($this->controller, 'findModel')) {
+            return $this->controller->findModel($this->getPrimaryKeys(), $class);
+        }
+        if ($this->findModel instanceof Closure) {
+            return call_user_func($this->findModel, $this->primaryKeyParam, $class);
+        }
+
+
+        $query = call_user_func([$this->modelClass, 'find']);
+        foreach ($this->primaryKeyParam as $key) {
+            $query->andWhere([$key => $this->controller->request->get($key)]);
+        }
+
+        if (($model = $query->one()) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
     protected function getRedirectUrl($model)

@@ -91,7 +91,7 @@ abstract class Action extends \yii\base\Action
         $query = call_user_func([$this->modelClass, 'find']);
 
 
-        if (($model = $query->one()) !== null) {
+        if (($model = $query->andWhere($condition)->one()) !== null) {
             return $model;
         }
 

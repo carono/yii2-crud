@@ -277,6 +277,9 @@ abstract class CrudController extends Controller
             'delete' => [
                 'class' => DeleteAction::class,
                 'primaryKeyParam' => $this->primaryKey,
+                'redirect' => function ($model) {
+                    return $this->deleteRedirect($model);
+                }
             ],
             'delete-batch' => [
                 'class' => DeleteBatch::class

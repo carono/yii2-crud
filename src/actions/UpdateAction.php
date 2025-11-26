@@ -38,10 +38,12 @@ class UpdateAction extends Action
 
         $this->applyProperties($model);
 
+
         $this->triggerBeforeUpdateLoad($model);
-        if (!$model->load(Yii::$app->request->post()) && !$this->standAloneSave) {
+        if (Yii::$app->request->isGet || (!$model->load(Yii::$app->request->post()) && !$this->standAloneSave)) {
             return $this->renderView($model);
         }
+
         $this->triggerAfterUpdateLoad($model);
 
         if (!$model->save()) {
